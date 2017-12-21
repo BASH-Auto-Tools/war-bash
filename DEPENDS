@@ -1,0 +1,4 @@
+war-bash
+Version: 0.20171221
+Description: WAR (KDE web archive) create and browse in bash
+Depends: bash, tar, gzip, sed, grep, findutils, coreutils
