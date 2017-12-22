@@ -1,0 +1,90 @@
+#!/bin/bash
+
+tmpdir="/tmp/war"
+browser="x-www-browser"
+[ -f /etc/war-bash.conf ] && source /etc/war-bash.conf
+[ -f ~/config/war-bash.conf ] && source ~/config/war-bash.conf
+user="$(whoami)"
+tmpdir="${tmpdir}_${user}"
+
+function usage()
+{
+    echo "WAR file (KDE WEB archive) wget page."
+    echo
+    echo "USAGE: $0 [options] name url/to/html/page"
+    echo "options:"
+    echo "  -h          help."
+    echo
+    exit 1
+}
+if [ $# = 0 ]
+then
+    usage
+fi
+
+while getopts ":h" opt
+do
+    case $opt in
+        h) usage
+            ;;
+        *) echo "Unknown option -$OPTARG"
+            exit 1
+            ;;
+    esac
+done
+shift "$(($OPTIND - 1))"
+htmldir="$1"
+if [ -z "$htmldir" ]
+then
+    usage
+fi
+htmlurl="$2"
+if [ -z "$htmlurl" ]
+then
+    usage
+fi
+if [ -z "$warfile" ]
+then
+    warfile="$htmldir.war"
+fi
+
+rm -rf "$tmpdir"
+mkdir -p "$tmpdir"
+wget -c -t0 -p -k -E -P "$tmpdir/$htmldir" "$htmlurl"
+
+function index_gen()
+{
+    td="$1"
+    if [ -d "$td" ]
+    then
+        cd "$td"
+        cat > "index.html" <<EOF 
+<!DOCTYPE html>
+<!-- Source is http://www.warmplace.ru/ -->
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>$htmldir</title>
+</head>
+<body>
+    <h1>$htmldir</h1>
+    <ol>
+EOF
+        find . -iname "*.html" -o -iname "*.htm" | sort | sed -e "s/.*/        <li><a href=\"&\">&<\/a><\/li>/;" >> "index.html"
+        cat >> "index.html" <<EOF 
+    </ol>
+</body>
+</html>
+EOF
+        sed -i -e '/<li><a href=".\/index.html">.\/index.html<\/a><\/li>/d' "index.html"
+        cd -
+    fi
+}
+
+if [ ! -f "$tmpdir/$htmldir/index.html" ]
+then
+    index_gen "$tmpdir/$htmldir"
+fi
+
+tar cz -C "$tmpdir/$htmldir" -f "$warfile" .
+rm -rf "$tmpdir"

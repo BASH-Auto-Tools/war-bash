@@ -1,4 +1,4 @@
-.TH war-bash 1 "21 Dec 2017" "0.20171221" "User Manual"
+.TH war-bash 1 "23 Dec 2017" "0.20171223" "User Manual"
 .SH NAME
 war-browse
 .SH DESCRIPTION
@@ -17,14 +17,34 @@ war-create
 .SH DESCRIPTION
 WAR file (KDE WEB archive) creator.
 .SH USAGE
-war-create [options] /path/to/html file.war
+war-create [options] /path/to/html/dir [file.war]
 .SH OPTIONS
-.TP
-\fB-i\fP
-using exist index.html.
 .TP
 \fB-h\fP
 display help and exit
+.SH NAME
+war-unpack
+.SH DESCRIPTION
+WAR file (KDE WEB archive) unpack.
+.SH USAGE
+war-unpack [options] file.war
+.SH OPTIONS
+.TP
+\fB-h\fP
+display help and exit
+.SH NAME
+war-wget
+.SH DESCRIPTION
+WAR file (KDE WEB archive) wget page.
+.SH USAGE
+war-wget [options] name url/to/html/page
+.SH OPTIONS
+.TP
+\fB-h\fP
+display help and exit
+.SH CONFIG FILE
+ /etc/war-bash.conf
+ ~/config/war-bash.conf
 .SH COPYRIGHT
  Copyright (c) 2017 zvezdochiot
 .SH SEE ALSO
