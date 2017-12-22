@@ -1,8 +1,11 @@
 #!/bin/bash
 
-user="$(whoami)"
-tmpdir="/tmp/war_$user"
+tmpdir="/tmp/war"
 browser="x-www-browser"
+[ -f /etc/war-bash.conf ] && source /etc/war-bash.conf
+[ -f ~/config/war-bash.conf ] && source ~/config/war-bash.conf
+user="$(whoami)"
+tmpdir="${tmpdir}_${user}"
 
 function usage()
 {
@@ -19,8 +22,6 @@ if [ $# = 0 ]
 then
     usage
 fi
-
-browser="x-www-browser"
 
 while getopts ":b:h" opt
 do
