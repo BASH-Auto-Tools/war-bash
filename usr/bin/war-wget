@@ -13,6 +13,8 @@ function usage()
     echo
     echo "USAGE: $0 [options] name url/to/html/page"
     echo "options:"
+    echo "  -c    clean LIST (sample 'js,php,eot,wott,ttf', default = '')"
+    echo "  -r    reject LIST (sample 'js,php,eot,wott,ttf', default = '')"
     echo "  -h          help."
     echo
     exit 1
@@ -22,9 +24,13 @@ then
     usage
 fi
 
-while getopts ":h" opt
+while getopts ":c:r:h" opt
 do
     case $opt in
+        c) cleanlist="$OPTARG"
+            ;;
+        r) rejectlist="$OPTARG"
+            ;;
         h) usage
             ;;
         *) echo "Unknown option -$OPTARG"
@@ -49,8 +55,14 @@ then
 fi
 
 rm -rf "$tmpdir"
-mkdir -p "$tmpdir"
-wget -c -t0 -p -k -E -P "$tmpdir/$htmldir" "$htmlurl"
+mkdir -p "$tmpdir/$htmldir"
+
+if [ -z "$rejectlist" ]
+then
+    wget -c -t0 -p -k -E -P "$tmpdir/$htmldir" "$htmlurl"
+else
+    wget -c -t0 -p -k -E -R "$rejectlist" -P "$tmpdir/$htmldir" "$htmlurl"
+fi
 
 function index_gen()
 {
@@ -86,5 +98,11 @@ then
     index_gen "$tmpdir/$htmldir"
 fi
 
+cleanopt=$(echo "$cleanlist" | sed "s/\,/|/g")
+if [ ! -z "$cleanopt" ]
+then
+    find "$tmpdir" -type f -regextype posix-egrep -regex '.*\.('$cleanopt')$' | xargs rm -v
+    find "$tmpdir" -type f -regextype posix-egrep -regex '.*\.('$cleanopt')\?.*$' | xargs rm -v
+fi
 tar cz -C "$tmpdir/$htmldir" -f "$warfile" .
 rm -rf "$tmpdir"
