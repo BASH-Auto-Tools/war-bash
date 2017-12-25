@@ -1,5 +1,5 @@
 # war-bash
-Version 0.20171223
+Version 0.20171225
 
 WAR file (KDE WEB archive) create and browse in bash.
 
@@ -32,8 +32,9 @@ WAR file (KDE WEB archive) wget page.
 
 USAGE: war-wget [options] name url/to/html/page  
 OPTIONS:  
+-c    clean LIST (sample 'js,php,eot,wott,ttf', default = '')  
+-r    reject LIST (sample 'js,php,eot,wott,ttf', default = '')  
 -h    display help and exit
-
 
 COPYRIGHT:  
 Copyright (c) 2017 zvezdochiot
